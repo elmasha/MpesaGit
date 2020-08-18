@@ -13,10 +13,12 @@ const port =process.env.PORT ||4224;
 
 
 //routes
-
 app.get('/', (req, res)=>{
 
+
+
 res.send("Hello Elmasha Mpesa APi")
+
 
 
 })
