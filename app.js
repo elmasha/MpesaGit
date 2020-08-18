@@ -2,18 +2,33 @@ const express = require('express')
 const request = require('request')
 const bodyParser = require('body-parser');
 const e = require('express');
+const http = require('http');
+const https = require('https');
 const app = express();
+const apiCallFromRequest = require('./Request')
+const apiCallFromNode = require('./nodeCalls')
 const port = 4224;
+
+
 
 
 //routes
 
 app.get('/', (req, res)=>{
 
-
 res.send("Hello Elmasha")
+console.log(req.headers)
+
 
 })
+
+https.get('',res =>{
+
+
+
+})
+
+
 
 
 ///----Access Token ---
@@ -57,7 +72,7 @@ app.get('/stk', access ,(req,res)=>{
                     "PartyA": "254746291229",
                     "PartyB": "174379",
                     "PhoneNumber": "254746291229",
-                    "CallBackURL": "https://ip_address:port/callback",
+                    "CallBackURL": "https://mkoba.herokuapp.com/callback",
                     "AccountReference": " Elmasha TEST",
                     "TransactionDesc": "Lipa na Mpesa"
 
@@ -198,7 +213,6 @@ function access(res,req,next){
 
 
 
-
 //-- listen
 app.listen(4224,(error,live)=>{
 
@@ -206,6 +220,7 @@ if(error){
 
 }else{
 
+    console.log(http.METHODS);
     console.log("Server running on port",port)
 
 }
