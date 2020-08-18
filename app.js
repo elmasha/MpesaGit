@@ -7,7 +7,7 @@ const https = require('https');
 const app = express();
 const apiCallFromRequest = require('./Request')
 const apiCallFromNode = require('./nodeCalls')
-const port =process.env.PORT ||4224;
+const port =4224;
 
 
 
