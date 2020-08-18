@@ -72,7 +72,7 @@ app.get('/stk', access ,(req,res)=>{
                     "PartyA": "254746291229",
                     "PartyB": "174379",
                     "PhoneNumber": "254746291229",
-                    "CallBackURL": "https://mkoba.herokuapp.com/callback",
+                    "CallBackURL": "https://mkoba.herokuapp.com/Callback",
                     "AccountReference": " Elmasha TEST",
                     "TransactionDesc": "Lipa na Mpesa"
 
@@ -214,13 +214,31 @@ function access(res,req,next){
 
 
 //-- listen
-app.listen(4224,(error,live)=>{
+app.listen(4224,function(error,live){
 
 if(error){
 
+
 }else{
 
-    console.log(http.METHODS);
+    http.createServer((req, res) => {
+        if(req.url === "/request"){
+            apiCallFromRequest.callApi(function(response){
+                //console.log(JSON.stringify(response));
+                res.write(JSON.stringify(response));
+                res.end();
+            });
+        }
+        else if(req.url === "/Callback"){
+            apiCallFromNode.callApi(function(response){
+                res.write(response);
+                res.end();
+            });
+        }
+        
+        // res.end();
+})
+
     console.log("Server running on port",port)
 
 }
