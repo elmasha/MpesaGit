@@ -73,9 +73,9 @@ app.get('/stk', access ,(req,res)=>{
                     "Timestamp":timeStamp,
                     "TransactionType": "CustomerPayBillOnline",
                     "Amount": "1",
-                    "PartyA": "254746291229",
+                    "PartyA": "254707820301",
                     "PartyB": "174379",
-                    "PhoneNumber": "254746291229",
+                    "PhoneNumber": "254707820301",
                     "CallBackURL": "https://192.168.42.98:4224/Callbacks",
                     "AccountReference": " Elmasha TEST",
                     "TransactionDesc": "Lipa na Mpesa"
@@ -102,6 +102,61 @@ app.get('/stk', access ,(req,res)=>{
         })
 
 });
+
+
+
+///----STK QUERY ---
+app.get('/stk/query',access,(req,res)=>{
+
+    checkoutRequestId='ws_CO_180820201216129321'
+
+    auth = "Bearer "+ req.access_token
+
+    let endpoint ='https://sandbox.safaricom.co.ke/mpesa/stkpushquery/v1/query'
+    const _shortCode = '174379'
+    const _passKey = 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919'
+    const timeStamp = (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -3)
+    const password = Buffer.from(`${_shortCode}${_passKey}${timeStamp}`).toString('base64')
+    
+
+    request(
+        {
+            url:endpoint,
+            method:"POST",
+            headers:{
+                "Authorization": auth
+            },
+           
+        json:{
+    
+            'BusinessShortCode': _shortCode,
+            'Password': password,
+            'Timestamp': timeStamp,
+            'CheckoutRequestID': checkoutRequestId
+
+            }
+
+        },
+        function(error,response,body){
+
+            if(error){
+
+                console.log(error);
+
+            }else if(response == 404){
+
+                console.log("Error Something went wrong..")
+
+
+            }else{
+                res.status(200).json(body)
+                console.log(body)
+            }
+
+        })
+
+})
+
 
 app.get('/Callbacks',(req,res)=>{
     
