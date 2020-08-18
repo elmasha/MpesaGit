@@ -24,15 +24,15 @@ app.get('/access_token',access,(req,res)=>{
 })
 
 ///----Stk Push ---//
-app.get('/stk', access ,(res,req)=>{
+app.get('/stk', access ,(req,res)=>{
 
 
     let endpoint = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
     let auth = "Bearer "+ req.access_token
 
-    const dateNow = new Date()
-    let timestamp = dateNow.getFullYear() +""+""+dateNow.getMonth()+""+""+dateNow.getDate()
-    +""+""+ dateNow.getHours()+""+""+dateNow.getMinutes()+""+""+dateNow.getSeconds();
+    let dateNow = new Date();
+    const timestamp = dateNow.getFullYear() +" "+" "+dateNow.getMonth()+" "+" "+dateNow.getDate()
+    +" "+" "+ dateNow.getHours()+" "+" "+dateNow.getMinutes()+"i"+"i"+dateNow.getSeconds();
 
     const password = new Buffer.from('174379' + 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919'  +timestamp).toString('base64');
 
@@ -45,18 +45,22 @@ app.get('/stk', access ,(res,req)=>{
 
                 "Authorization": auth
                 
-            },json:{
-                "BusinessShortCode":"174379",
-                "Password" :password,
-                "Timestamp":timestamp,
-                "TransactionType":"CustomerPayBillOnline",
-                "Amount":"1",
-                "PartyA":"254746291229",
-                "PartyB":"174379",
-                "PhoneNumber":"254746291229",
-                "CallBackURL":"https://mkoba.herokuapp.com:4111/callbacks",
-                "AccountReference":"Elmasha TEST",
-                "TransactionDesc":"Lipa na Mpesa",
+            },
+    
+        json:{
+    
+                    "BusinessShortCode": "174379",
+                    "Password": password,
+                    "Timestamp": timestamp,
+                    "TransactionType": "CustomerPayBillOnline",
+                    "Amount": " 1",
+                    "PartyA": "254746291229",
+                    "PartyB": "174379",
+                    "PhoneNumber": "254746291229",
+                    "CallBackURL": "https://ip_address:port/callback",
+                    "AccountReference": " Elmasha TEST",
+                    "TransactionDesc": "Lipa na Mpesa"
+
             }
 
         },
@@ -79,7 +83,7 @@ app.get('/stk', access ,(res,req)=>{
 
 
 ///-----B2c -----///
-app.get('/b2c', access , (res,req)=>{
+app.get('/b2c', access , (req,res)=>{
 
 
     let endpoint = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/processrequest"
@@ -93,28 +97,27 @@ app.get('/b2c', access , (res,req)=>{
             "Authorization": auth
                 
             },json:{
+        
                 "InitiatorName":"testapi481",
-                "SecurityCredential":"IeLYriOxTaityG/uhB+74NIiZW8blxi5dC89CQRW2pliMYPb36n5E08NT+5fUXk60JHFNi5csrN9dFpE7zbswV9FHf3qhZuNEbuUt1ix6rPk7fIQXe3KQL1BOe0boYd4+nwcv283KzxJ+42A9WdH4j+5RlY7lTeGCzHztw1S1DHcUHGUIfsDHnff3DdjgNHGVlRVW3KuEzO/BfLLx8bDPxa4RNGoFaFaDPj6I235wrze0pZVtz9Nsxdu9ixzqD0boZClM5qX4SKwarsDAyPU09yi7OECPW0mwXs2CPUrychIHn8aTvN3ZxQBAHT1WqtIZsj92HAs9UCRm91AgyiO9A==",
-                "CommabID":"BusinessPayBill",
-                "Amount":"1",
+                "SecurityCredential":"IeLYriOxTaityG/uhB+74NIiZW8blxi5dC89CQRW2pliMYPb36n5E08NT+5fUXk60JHFNi5csrN9dFpE7zbswV9FHf3qhZuNEbuUt1ix6rPk7fIQXe3KQL1BOe0boYd4+nwcv283KzxJ+42A9WdH4j+5RlY7lTeGCzHztw1S1DHcUHGUIfsDHnff3DdjgNHGVlRVW3KuEzO/BfLLx8bDPxa4RNGoFaFaDPj6I235wrze0pZVtz9Nsxdu9ixzqD0boZClM5qX4SKwarsDAyPU09yi7OECPW0mwXs2CPUrychIHn8aTvN3ZxQBAHT1WqtIZsj92HAs9UCRm91AgyiO9A== ",
+                "CommandID":"BusinessPayment",
+                "Amount":"23",
                 "PartyA":"600481",
                 "PartyB":"254708374149",
-                "Remarks":"Salary Payment",
-                "QueueTimeoutUrl":"http://TimeOut_Url",
-                "ResultURl":"http://Result_Url",
-                "Occasion":"MpesaApi001",
+                "Remarks":" Salary Payment",
+                "QueueTimeOutURL":"http://your_timeout_url",
+                "ResultURL":"http://your_result_url",
+                "Occasion":"MpesaApi001 "
 
             }
-
         
-        },function(error,response,body){
-
+        },
+        function(error,response,body){
             if(error){
-
-            }else{
+                console.log(error);
+            }
 
                 res.status(200).json(body)
-            }
 
         }
     )
