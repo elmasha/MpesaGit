@@ -49,7 +49,7 @@ app.get('/stk', access ,(res,req)=>{
                 "BusinessShortCode":"174379",
                 "Password" :password,
                 "Timestamp":timestamp,
-                "TransactionType":"CustomerBillOnline",
+                "TransactionType":"CustomerPayBillOnline",
                 "Amount":"1",
                 "PartyA":"254746291229",
                 "PartyB":"174379",
@@ -68,7 +68,7 @@ app.get('/stk', access ,(res,req)=>{
 
             }
 
-                res.status(200).json(body);
+                res.status(200).json(body)
         
 
         })
