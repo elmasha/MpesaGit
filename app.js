@@ -120,8 +120,8 @@ app.get('/b2c', access , (req,res)=>{
                 "PartyA":"600481",
                 "PartyB":"254708374149",
                 "Remarks":" Salary Payment",
-                "QueueTimeOutURL":"http://your_timeout_url",
-                "ResultURL":"http://your_result_url",
+                "QueueTimeOutURL":"https://mkoba.herokuapp.com/timeout_url",
+                "ResultURL":"https://mkoba.herokuapp.com/result_url",
                 "Occasion":"MpesaApi001 "
 
             }
