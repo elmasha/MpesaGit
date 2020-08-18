@@ -7,7 +7,7 @@ const https = require('https');
 const app = express();
 const apiCallFromRequest = require('./Request')
 const apiCallFromNode = require('./nodeCalls')
-const port = 4224;
+const port =process.env.PORT ||4224;
 
 
 
@@ -16,14 +16,7 @@ const port = 4224;
 
 app.get('/', (req, res)=>{
 
-res.send("Hello Elmasha")
-console.log(req.headers)
-
-
-})
-
-https.get('',res =>{
-
+res.send("Hello Elmasha Mpesa APi")
 
 
 })
@@ -72,7 +65,7 @@ app.get('/stk', access ,(req,res)=>{
                     "PartyA": "254746291229",
                     "PartyB": "174379",
                     "PhoneNumber": "254746291229",
-                    "CallBackURL": "https://mkoba.herokuapp.com/Callback",
+                    "CallBackURL": "https://mkoba.herokuapp.com/Callbacks",
                     "AccountReference": " Elmasha TEST",
                     "TransactionDesc": "Lipa na Mpesa"
 
@@ -94,7 +87,12 @@ app.get('/stk', access ,(req,res)=>{
 
 });
 
+app.get('/Callbacks',(res,req)=>{
 
+res.send(body)
+
+
+})
 
 
 ///-----B2c -----///
@@ -219,27 +217,9 @@ app.listen(4224,function(error,live){
 if(error){
 
 
-}else{
+}else{  
 
-    http.createServer((req, res) => {
-        if(req.url === "/request"){
-            apiCallFromRequest.callApi(function(response){
-                //console.log(JSON.stringify(response));
-                res.write(JSON.stringify(response));
-                res.end();
-            });
-        }
-        else if(req.url === "/Callback"){
-            apiCallFromNode.callApi(function(response){
-                res.write(response);
-                res.end();
-            });
-        }
-        
-        // res.end();
-})
-
-    console.log("Server running on port",port)
+    console.log('Server running on port',port)
 
 }
 
