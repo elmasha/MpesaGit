@@ -3,7 +3,7 @@ const request = require('request')
 const bodyParser = require('body-parser');
 const e = require('express');
 const app = express();
-const port = 4111;
+const port = 4224;
 
 
 //routes
@@ -30,11 +30,11 @@ app.get('/stk', access ,(res,req)=>{
     let endpoint = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
     let auth = "Bearer "+ req.access_token
 
-    let dateNow = new Date()
-    const timestamp = dateNow.getFullYear() +""+""+dateNow.getMonth()+""+""+dateNow.getDate()
-    +""+""+ dateNow.getHours()+""+""+dateNow.getMinutes()+"i"+"i"+dateNow.getSeconds();
+    const dateNow = new Date()
+    let timestamp = dateNow.getFullYear() +""+""+dateNow.getMonth()+""+""+dateNow.getDate()
+    +""+""+ dateNow.getHours()+""+""+dateNow.getMinutes()+""+""+dateNow.getSeconds();
 
-    const password = new Buffer('174379'+'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919'+timestamp).toString('base64');
+    const password = new Buffer.from('174379' + 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919'  +timestamp).toString('base64');
 
 
     request(
@@ -51,33 +51,32 @@ app.get('/stk', access ,(res,req)=>{
                 "Timestamp":timestamp,
                 "TransactionType":"CustomerBillOnline",
                 "Amount":"1",
-                "PartyA":"25446291229",
+                "PartyA":"254746291229",
                 "PartyB":"174379",
-                "PhoneNumber":"25446291229",
-                "CallBackURL":"http://ip:1212/callbacks",
+                "PhoneNumber":"254746291229",
+                "CallBackURL":"https://mkoba.herokuapp.com:4111/callbacks",
                 "AccountReference":"Elmasha TEST",
                 "TransactionDesc":"Lipa na Mpesa",
             }
 
         },
-        function(error,response,body){
+       function(error,response,body){
 
             if(error){
 
-                console.log(error)
-
-            }else{
-
-                res.status(200).json(body)
+                console.log(error);
 
             }
 
+                res.status(200).json(body);
+        
 
-        }
-    )
+        })
+
+});
 
 
-})
+
 
 ///-----B2c -----///
 app.get('/b2c', access , (res,req)=>{
@@ -85,7 +84,6 @@ app.get('/b2c', access , (res,req)=>{
 
     let endpoint = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/processrequest"
     let auth = "Bearer "+ req.access_token
-
 
     request(
         {
@@ -95,20 +93,20 @@ app.get('/b2c', access , (res,req)=>{
             "Authorization": auth
                 
             },json:{
-                "InitiatorName":"",
-                "SecurityCredential":"",
-                "CommabID":"",
-                "Amount":"",
-                "PartyA":"",
-                "PartyB":"",
-                "Remarks":"",
+                "InitiatorName":"testapi481",
+                "SecurityCredential":"IeLYriOxTaityG/uhB+74NIiZW8blxi5dC89CQRW2pliMYPb36n5E08NT+5fUXk60JHFNi5csrN9dFpE7zbswV9FHf3qhZuNEbuUt1ix6rPk7fIQXe3KQL1BOe0boYd4+nwcv283KzxJ+42A9WdH4j+5RlY7lTeGCzHztw1S1DHcUHGUIfsDHnff3DdjgNHGVlRVW3KuEzO/BfLLx8bDPxa4RNGoFaFaDPj6I235wrze0pZVtz9Nsxdu9ixzqD0boZClM5qX4SKwarsDAyPU09yi7OECPW0mwXs2CPUrychIHn8aTvN3ZxQBAHT1WqtIZsj92HAs9UCRm91AgyiO9A==",
+                "CommabID":"BusinessPayBill",
+                "Amount":"1",
+                "PartyA":"600481",
+                "PartyB":"254708374149",
+                "Remarks":"Salary Payment",
                 "QueueTimeoutUrl":"http://TimeOut_Url",
                 "ResultURl":"http://Result_Url",
-                "Occasion":"",
+                "Occasion":"MpesaApi001",
 
             }
 
-            
+        
         },function(error,response,body){
 
             if(error){
@@ -199,7 +197,7 @@ function access(res,req,next){
 
 
 //-- listen
-app.listen(4111,(error,live)=>{
+app.listen(4224,(error,live)=>{
 
 if(error){
 
