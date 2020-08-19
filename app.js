@@ -36,17 +36,14 @@ app.get('/access_token',access,(req,res)=>{
 ///----Stk Push ---//
 app.get('/stk', access ,(req,res)=>{
 
-
-    let endpoint = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
-    let auth = "Bearer "+ req.access_token
-
-    let dateNow = new Date();
-    const timestamp = dateNow.getFullYear() +" "+" "+dateNow.getMonth()+" "+" "+dateNow.getDate()
-    +" "+" "+ dateNow.getHours()+" "+" "+dateNow.getMinutes()+"i"+"i"+dateNow.getSeconds();
-
-    const password = new Buffer.from('174379' + 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919'  +timestamp).toString('base64');
+    let endpoint = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
+     auth = "Bearer "+ req.access_token
 
 
+     let date = new Date()
+     const timestamp = date.getFullYear() + "" + "" + date.getMonth() + "" + "" + date.getDate() + "" + "" + date.getHours() + "" + "" + date.getMinutes() + "" + "" + date.getSeconds()
+     const password = new Buffer.from('174379' + 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919' + timestamp).toString('base64')
+ 
     request(
         {
             url:endpoint,
@@ -60,8 +57,8 @@ app.get('/stk', access ,(req,res)=>{
         json:{
     
                     "BusinessShortCode": "174379",
-                    "Password": password,
-                    "Timestamp": timestamp,
+                    "Password":password,
+                    "Timestamp":timestamp,
                     "TransactionType": "CustomerPayBillOnline",
                     "Amount": " 1",
                     "PartyA": "254746291229",
@@ -80,19 +77,25 @@ app.get('/stk', access ,(req,res)=>{
 
                 console.log(error);
 
-            }
+            }else if(response == 404){
 
+                console.log("Error Something went wrong..")
+
+
+            }else{
                 res.status(200).json(body)
-        
+                console.log(body)
+            }
 
         })
 
 });
 
 app.get('/Callbacks',(res,req)=>{
+    
+console.log('.......... STK Callback ..................')
 
-res.send(body)
-
+console.log(JSON.stringify(req.body.Body.Callbacks))
 
 })
 
@@ -141,6 +144,16 @@ app.get('/b2c', access , (req,res)=>{
 })
 
 
+app.post('/timeout_url', (req, resp) => {
+    console.log('.......... Timeout ..................')
+    console.log(req.body)
+})
+
+app.post('/result_url', (req, resp) => {
+    console.log('.......... Results..................')
+    console.log(req.body)
+})
+
 
 
 
@@ -175,8 +188,6 @@ app.get('/Register_urls',access,(res,req)=>{
 
 
 })
-
-
 
 
 
