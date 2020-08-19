@@ -9,6 +9,17 @@ const apiCallFromRequest = require('./Request')
 const apiCallFromNode = require('./nodeCalls')
 const port =4224;
 
+const urls = {
+    'stk': "",
+    "simulate": "",
+    "b2c": "",
+    "base_url": ""
+}
+const maker = access_token()
+const headers = {
+    "Authorization": "Bearer " + maker
+}
+
 
 
 
@@ -38,12 +49,13 @@ app.get('/stk', access ,(req,res)=>{
 
     let endpoint = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
      auth = "Bearer "+ req.access_token
+     let _shortCode = '174379'
+     let _passKey = 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919'
 
 
-     let date = new Date()
-     const timestamp = date.getFullYear() + "" + "" + date.getMonth() + "" + "" + date.getDate() + "" + "" + date.getHours() + "" + "" + date.getMinutes() + "" + "" + date.getSeconds()
-     const password = new Buffer.from('174379' + 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919' + timestamp).toString('base64')
- 
+     const timeStamp = (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -3);
+     const password = Buffer.from(`${_shortCode}${_passKey}${timeStamp}`).toString('base64');
+
     request(
         {
             url:endpoint,
@@ -58,13 +70,13 @@ app.get('/stk', access ,(req,res)=>{
     
                     "BusinessShortCode": "174379",
                     "Password":password,
-                    "Timestamp":timestamp,
+                    "Timestamp":timeStamp,
                     "TransactionType": "CustomerPayBillOnline",
-                    "Amount": " 1",
+                    "Amount": "1",
                     "PartyA": "254746291229",
                     "PartyB": "174379",
                     "PhoneNumber": "254746291229",
-                    "CallBackURL": "https://mkoba.herokuapp.com/Callbacks",
+                    "CallBackURL": "https://192.168.42.98:4224/Callbacks",
                     "AccountReference": " Elmasha TEST",
                     "TransactionDesc": "Lipa na Mpesa"
 
@@ -91,11 +103,11 @@ app.get('/stk', access ,(req,res)=>{
 
 });
 
-app.get('/Callbacks',(res,req)=>{
+app.get('/Callbacks',(req,res)=>{
     
 console.log('.......... STK Callback ..................')
 
-console.log(JSON.stringify(req.body.Body.Callbacks))
+console.log(JSON.stringify(req.body))
 
 })
 
@@ -221,6 +233,126 @@ function access(res,req,next){
 
 
 }
+
+
+//----------------Reverse ------///
+
+app.get('/reverse', access, (req, res) => {
+    const url = 'https://sandbox.safaricom.co.ke/mpesa/reversal/v1/request',
+        auth = 'Bearer ' + req.access_token
+
+        request({
+            method: "POST",
+            url: url,
+            headers: {
+                "Authorization": auth
+            },
+            json: {
+                "Initiator": "apitest342",
+                "SecurityCredential":"Q9KEnwDV/V1LmUrZHNunN40AwAw30jHMfpdTACiV9j+JofwZu0G5qrcPzxul+6nocE++U6ghFEL0E/5z/JNTWZ/pD9oAxCxOik/98IYPp+elSMMO/c/370Joh2XwkYCO5Za9dytVmlapmha5JzanJrqtFX8Vez5nDBC4LEjmgwa/+5MvL+WEBzjV4I6GNeP6hz23J+H43TjTTboeyg8JluL9myaGz68dWM7dCyd5/1QY0BqEiQSQF/W6UrXbOcK9Ac65V0+1+ptQJvreQznAosCjyUjACj35e890toDeq37RFeinM3++VFJqeD5bf5mx5FoJI/Ps0MlydwEeMo/InA==",
+                "CommandID":"TransactionReversal",
+                "TransactionID":"NLJ11HAY8V",
+                "Amount":"100",
+                "ReceiverParty":"601342",
+                "RecieverIdentifierType":"11",
+                "ResultURL":"http://197.248.86.122:801/reverse_result_url",
+                "QueueTimeOutURL":"http://197.248.86.122:801/reverse_timeout_url",
+                "Remarks":"Wrong Num",
+                "Occasion":"sent wrongly"
+            }
+        },
+            function (error, response, body) {
+                if (error) {
+                    console.log(error)
+                }
+                else {
+                    res.status(200).json(body)
+                }
+            }
+        )
+})
+
+app.post('/reverse_result_url', (req, res) => {
+    console.log("--------------------Reverse Result -----------------")
+    console.log(JSON.stringify(req.body.Result.ResultParameters))
+})
+
+app.post('/reverse_timeout_url', (req, res) => {
+    console.log("-------------------- Reverse Timeout -----------------")
+    console.log(req.body)
+})
+
+
+
+
+
+
+//////-----------Account Balance-----/////
+
+app.get('/balance', access, (req, resp) => {
+    let url = "https://sandbox.safaricom.co.ke/mpesa/accountbalance/v1/query"
+    let auth = "Bearer " + req.access_token
+
+    request(
+        {
+            url: url,
+            method: "POST",
+            headers: {
+                "Authorization": auth
+            },
+            json: {
+                "Initiator": "apitest342",
+                "SecurityCredential": "Q9KEnwDV/V1LmUrZHNunN40AwAw30jHMfpdTACiV9j+JofwZu0G5qrcPzxul+6nocE++U6ghFEL0E/5z/JNTWZ/pD9oAxCxOik/98IYPp+elSMMO/c/370Joh2XwkYCO5Za9dytVmlapmha5JzanJrqtFX8Vez5nDBC4LEjmgwa/+5MvL+WEBzjV4I6GNeP6hz23J+H43TjTTboeyg8JluL9myaGz68dWM7dCyd5/1QY0BqEiQSQF/W6UrXbOcK9Ac65V0+1+ptQJvreQznAosCjyUjACj35e890toDeq37RFeinM3++VFJqeD5bf5mx5FoJI/Ps0MlydwEeMo/InA==",
+                "CommandID": "AccountBalance",
+                "PartyA": "601342",
+                "IdentifierType": "4",
+                "Remarks": "bal",
+                "QueueTimeOutURL": "http://197.248.86.122:801/bal_timeout",
+                "ResultURL": "http://197.248.86.122:801/bal_result"
+            }
+        },
+        function (error, response, body) {
+            if (error) {
+                console.log(error)
+            }
+            else {
+                resp.status(200).json(body)
+            }
+        }
+    )
+})
+
+
+
+
+
+
+function access_token() {
+    // access token
+    let url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
+    let auth = new Buffer.from('K49Zle6LPHOGv7avuuw61MfIIWzai9gS:FQCGD4QOIFM4j8HJ').toString('base64');
+
+    request(
+        {
+            url: url,
+            headers: {
+                "Authorization": "Basic " + auth
+            }
+        },
+        (error, response, body) => {
+            if (error) {
+                console.log(error)
+            }
+            else {
+                // let resp = 
+               return JSON.parse(body).access_token
+            }
+        }
+    )
+}
+
+
+
 
 
 
