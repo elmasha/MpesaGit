@@ -45,13 +45,15 @@ app.get('/access_token',access,(req,res)=>{
 })
 
 ///----Stk Push ---//
-app.get('/stk', access ,(req,res)=>{
+app.post('/stk', access ,(req,res)=>{
 
     let endpoint = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
      auth = "Bearer "+ req.access_token
      let _shortCode = '174379'
      let _passKey = 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919'
-
+    
+    let amount = req.amount
+    const _phone = req.PhoneNumber
 
      const timeStamp = (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -3);
      const password = Buffer.from(`${_shortCode}${_passKey}${timeStamp}`).toString('base64');
@@ -70,13 +72,13 @@ app.get('/stk', access ,(req,res)=>{
     
                     "BusinessShortCode": "174379",
                     "Password":password,
-                    "Timestamp":timeStamp,
+                    "Timestamp":timeStamp, 
                     "TransactionType": "CustomerPayBillOnline",
-                    "Amount": "1",
-                    "PartyA": "254707820301",
+                    "Amount": amount,
+                    "PartyA": "254746291229",
                     "PartyB": "174379",
-                    "PhoneNumber": "254707820301",
-                    "CallBackURL": "https://192.168.42.98:4224/Callbacks",
+                    "PhoneNumber": _phone,
+                    "CallBackURL": "http://d57a58bd3e72.ngrok.io/Callbacks",
                     "AccountReference": " Elmasha TEST",
                     "TransactionDesc": "Lipa na Mpesa"
 
@@ -94,21 +96,33 @@ app.get('/stk', access ,(req,res)=>{
                 console.log("Error Something went wrong..")
 
 
-            }else{
-                res.status(200).json(body)
-                console.log(body)
             }
-
+                res.status(200).json(body)
+                console.log(body,amount)
+    
         })
 
 });
 
 
+//-----Callback Url ----///
+app.post('/Callbacks',(req,res)=>{
+    
+    console.log('.......... STK Callback ..................');
+    
+    console.log((req.body))
+
+    })
+
+
+
+
+
 
 ///----STK QUERY ---
-app.get('/stk/query',access,(req,res)=>{
+app.post('/stk/query',access,(req,res)=>{
 
-    checkoutRequestId='ws_CO_180820201216129321'
+    checkoutRequestId='ws_CO_180820201459553317'
 
     auth = "Bearer "+ req.access_token
 
@@ -158,13 +172,7 @@ app.get('/stk/query',access,(req,res)=>{
 })
 
 
-app.get('/Callbacks',(req,res)=>{
-    
-console.log('.......... STK Callback ..................')
 
-console.log(JSON.stringify(req.body))
-
-})
 
 
 ///-----B2c -----///
@@ -190,8 +198,8 @@ app.get('/b2c', access , (req,res)=>{
                 "PartyA":"600481",
                 "PartyB":"254708374149",
                 "Remarks":" Salary Payment",
-                "QueueTimeOutURL":"https://mkoba.herokuapp.com/timeout_url",
-                "ResultURL":"https://mkoba.herokuapp.com/result_url",
+                "QueueTimeOutURL":"http://0260b0fbe34e.ngrok.io/timeout_url",
+                "ResultURL":"http://0260b0fbe34e.ngrok.io/result_url",
                 "Occasion":"MpesaApi001 "
 
             }
